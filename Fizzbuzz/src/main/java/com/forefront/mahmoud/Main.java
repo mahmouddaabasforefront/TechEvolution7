@@ -1,7 +1,14 @@
 package com.forefront.mahmoud;
 
+import java.util.List;
+
 public class Main {
   public static void main(String[] args) {
-    System.out.println("Hello world!");
+    FizzBuzzCalculator fizzBuzzCalculator = new FizzBuzzCalculator();
+    List<String> result = fizzBuzzCalculator.doFizzBuzz(1, 100);
+
+    for (String item : result) {
+      System.out.println(item);
+    }
   }
 }
