@@ -1,11 +1,20 @@
+// src/components/Footer/Footer.tsx
 import React from 'react';
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  onStart: () => void;
+  running: boolean;
+  onRandomize: () => void;
+  onClear: () => void;
+}
+
+const Footer: React.FC<FooterProps> = ({ onStart, running, onRandomize, onClear }) => {
   return (
-    <footer>
-      <button>Start</button>
-      <button>Next</button>
-    </footer>
+    <div>
+      <button onClick={onStart}>{running ? 'Stop' : 'Start'}</button>
+      <button onClick={onRandomize}>Randomize</button>
+      <button onClick={onClear}>Clear</button>
+    </div>
   );
 };
 
