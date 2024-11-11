@@ -1,13 +1,16 @@
 const countLiveNeighbors = (grid, row, col) => {
+    const directions = [
+        [-1, -1], [-1, 0], [-1, 1],
+        [0, -1],          [0, 1],
+        [1, -1], [1, 0], [1, 1]
+    ];
     let count = 0;
-    for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-            if (i === 0 && j === 0) continue;
-            const newRow = row + i;
-            const newCol = col + j;
-            if (newRow >= 0 && newRow < grid.length && newCol >= 0 && newCol < grid[0].length) {
-                count += grid[newRow][newCol];
-            }
+
+    for (let [dx, dy] of directions) {
+        const newRow = row + dx;
+        const newCol = col + dy;
+        if (newRow >= 0 && newRow < grid.length && newCol >= 0 && newCol < grid[0].length) {
+            count += grid[newRow][newCol];
         }
     }
     return count;
@@ -22,12 +25,13 @@ const runGame = (prevGrid, onAllDead) => {
             const liveNeighbors = countLiveNeighbors(prevGrid, row, col);
 
             if (prevGrid[row][col] === 1) {
+                // Rule 1 and 3: Any live cell with fewer than two or more than three live neighbors dies.
                 newGrid[row][col] = (liveNeighbors === 2 || liveNeighbors === 3) ? 1 : 0;
             } else {
+                // Rule 4: Any dead cell with exactly three live neighbors becomes a live cell.
                 newGrid[row][col] = (liveNeighbors === 3) ? 1 : 0;
             }
 
-           
             if (newGrid[row][col] === 1) {
                 allDead = false;
             }
@@ -41,11 +45,4 @@ const runGame = (prevGrid, onAllDead) => {
     return newGrid;
 };
 
-
-const generateRandomGrid = (rows, cols) => {
-    return Array.from({ length: rows }, () =>
-        Array.from({ length: cols }, () => (Math.random() > 0.7 ? 1 : 0))
-    );
-};
-
-module.exports = { countLiveNeighbors, runGame, generateRandomGrid };
+module.exports = { countLiveNeighbors, runGame };
