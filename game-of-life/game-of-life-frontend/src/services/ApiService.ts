@@ -17,3 +17,7 @@ export const runGameApi = async (grid: number[][]) => {
 export const clearGridApi = async () => {
   return await axios.post(`${API_BASE_URL}/clear`);
 };
+
+export const toggleCellApi = async (rowIndex: number, colIndex: number) => {
+  return await axios.post(`${API_BASE_URL}/toggle`, { row: rowIndex, col: colIndex });
+};

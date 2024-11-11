@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchGridApi, randomizeGrid, runGameApi, clearGridApi } from './services/ApiService';
+import { fetchGridApi, randomizeGrid, runGameApi, clearGridApi, toggleCellApi } from './services/ApiService';
 import Grid from './components/Grid/Grid';
 import Footer from './components/Footer/Footer';
 import './App.css';
@@ -80,14 +80,12 @@ const App = () => {
     }
   };
 
-  const toggleCell = async (row: number, col: number): Promise<void> => {
+  const toggleCell = async (rowIndex: number, colIndex: number) => {
     try {
+      await toggleCellApi(rowIndex, colIndex);
       setGrid((prevGrid) => {
-        const newGrid = prevGrid.map((r, rowIndex) =>
-          r.map((cell, colIndex) =>
-            rowIndex === row && colIndex === col ? (cell === 1 ? 0 : 1) : cell
-          )
-        );
+        const newGrid = prevGrid.map(arr => [...arr]);
+        newGrid[rowIndex][colIndex] = newGrid[rowIndex][colIndex] === 1 ? 0 : 1;
         return newGrid;
       });
     } catch (error) {
