@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import App from '../App';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
 
@@ -15,11 +15,12 @@ describe('App Component', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        (axios.get as jest.Mock).mockResolvedValue({ data: gridData });
+        (axios.post as jest.Mock).mockResolvedValue({ data: gridData });
+        vi.spyOn(console, 'error').mockImplementation(() => {});
     });
 
     it('fetches grid data on mount', async () => {
-        (axios.get as jest.Mock).mockResolvedValueOnce({ data: gridData });
-        
         render(<App />);
         
         await waitFor(() => {
@@ -39,9 +40,6 @@ describe('App Component', () => {
     });
 
     it('toggles cell state when clicked', async () => {
-        (axios.get as jest.Mock).mockResolvedValueOnce({ data: gridData });
-        (axios.post as jest.Mock).mockResolvedValueOnce({ data: gridData });
-
         render(<App />);
 
         await waitFor(() => {
@@ -52,9 +50,6 @@ describe('App Component', () => {
     });
 
     it('randomizes the grid', async () => {
-        (axios.get as jest.Mock).mockResolvedValueOnce({ data: gridData });
-        (axios.post as jest.Mock).mockResolvedValueOnce({ data: gridData });
-        
         render(<App />);
 
         const randomizeButton = screen.getByRole('button', { name: /randomize/i });
@@ -67,9 +62,6 @@ describe('App Component', () => {
     });
 
     it('clears the grid', async () => {
-        (axios.get as jest.Mock).mockResolvedValueOnce({ data: gridData });
-        (axios.post as jest.Mock).mockResolvedValueOnce({ data: gridData });
-
         render(<App />);
 
         const clearButton = screen.getByRole('button', { name: /clear/i });
@@ -82,21 +74,17 @@ describe('App Component', () => {
     });
 
     it('starts and stops the game', async () => {
-        (axios.get as jest.Mock).mockResolvedValueOnce({ data: gridData });
-        
         render(<App />);
 
         const startButton = screen.getByRole('button', { name: /start/i });
         fireEvent.click(startButton);
-        console.log(startButton); // Check what this returns
 
         await waitFor(() => {
             expect(screen.getByText(/stop/i)).toBeInTheDocument();
-        })
+        });
     });
 
     it('displays message when all cells are dead', async () => {
-        (axios.get as jest.Mock).mockResolvedValueOnce({ data: gridData });
         (axios.post as jest.Mock).mockResolvedValueOnce({ data: [[0, 0, 0], [0, 0, 0], [0, 0, 0]] });
 
         render(<App />);

@@ -1,34 +1,21 @@
-// src/App.tsx
-import { useEffect, useState } from 'react';
-import './App.css';
-import Footer from './components/Footer/Footer';
+import { useState, useEffect, useCallback } from 'react';
+import { fetchGridApi, randomizeGrid, runGameApi, clearGridApi } from './services/ApiService';
 import Grid from './components/Grid/Grid';
-import axios from 'axios';
+import Footer from './components/Footer/Footer';
+import './App.css';
 
-function App() {
-  const [running, setRunning] = useState(false);
-  const [message, setMessage] = useState('');
+const App = () => {
   const [grid, setGrid] = useState<number[][]>([]);
+  const [message, setMessage] = useState<string>('');
+  const [running, setRunning] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchGrid();
+    fetchGrid(); // Fetch the grid when the component mounts
   }, []);
-
-  useEffect(() => {
-    let intervalId: number;
-
-    if (running) {
-      intervalId = window.setInterval(async () => {
-        await runGame();
-      }, 500);
-
-      return () => clearInterval(intervalId);
-    }
-  }, [running]);
 
   const fetchGrid = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/grid');
+      const response = await fetchGridApi();
       setGrid(response.data);
       setMessage(''); // Clear any previous messages when fetching grid
     } catch (error) {
@@ -42,9 +29,9 @@ function App() {
     setMessage('All cells are dead!');
   };
 
-  const randomizeGrid = async () => {
+  const randomize = async () => {
     try {
-      await axios.post('http://localhost:5000/api/randomize');
+      await randomizeGrid();
       fetchGrid();
       setMessage('Grid has been randomized!');
     } catch (error) {
@@ -53,34 +40,38 @@ function App() {
     }
   };
 
-  const runGame = async () => {
+  const runGame = useCallback(async () => {
     try {
-        const currentAliveCells = grid.flat().some((cell) => cell === 1);
-        
-        if (currentAliveCells) {
-            const response = await axios.post('http://localhost:5000/api/run', { grid });
-            const newGrid = response.data;
-            setGrid(newGrid);
-
-            // Check if the new grid has any alive cells
-            if (newGrid.flat().every((cell: number) => cell === 0)) {
-                console.log("No alive cells found after running the game.");
-                handleAllDead(); // Call here when there are no alive cells
-            }
-        } else {
-            console.log("No alive cells before running the game.");
-            handleAllDead();
+      const currentAliveCells = grid.flat().some((cell) => cell === 1);
+  
+      if (currentAliveCells) {
+        const response = await runGameApi(grid);
+        const newGrid = response.data;
+        setGrid(newGrid);
+  
+        if (newGrid.flat().every((cell: number) => cell === 0)) {
+          handleAllDead();
         }
+      } else {
+        handleAllDead();
+      }
     } catch (error) {
-        console.error('Error running game:', error);
-        setMessage('Failed to run game.');
+      console.error('Error running game:', error);
+      setMessage('Failed to run game.');
     }
-};
+  }, [grid]);
 
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+    if (running) {
+      intervalId = setInterval(runGame, 1000);
+    }
+    return () => clearInterval(intervalId);
+  }, [runGame, running]);
 
   const clearGrid = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/clear');
+      const response = await clearGridApi();
       setGrid(response.data);
       setMessage('Grid has been cleared!');
     } catch (error) {
@@ -89,12 +80,14 @@ function App() {
     }
   };
 
-  const toggleCell = async (rowIndex: number, colIndex: number) => {
+  const toggleCell = async (row: number, col: number): Promise<void> => {
     try {
-      await axios.post('http://localhost:5000/api/toggle', { row: rowIndex, col: colIndex });
       setGrid((prevGrid) => {
-        const newGrid = prevGrid.map(arr => [...arr]);
-        newGrid[rowIndex][colIndex] = newGrid[rowIndex][colIndex] === 1 ? 0 : 1;
+        const newGrid = prevGrid.map((r, rowIndex) =>
+          r.map((cell, colIndex) =>
+            rowIndex === row && colIndex === col ? (cell === 1 ? 0 : 1) : cell
+          )
+        );
         return newGrid;
       });
     } catch (error) {
@@ -120,13 +113,13 @@ function App() {
           <Footer
             onStart={handleStart}
             running={running}
-            onRandomize={randomizeGrid}
+            onRandomize={randomize}
             onClear={clearGrid}
           />
         </div>
       </div>
     </>
   );
-}
+};
 
 export default App;
