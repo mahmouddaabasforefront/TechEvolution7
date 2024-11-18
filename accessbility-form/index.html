@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exempel på ett formulär</title>
+</head>
+
+<body>
+    <h1>Personal information</h1>
+    <form action="/submit" method="post">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="age">Age:</label><br>
+        <input type="number" id="age" name="age" min="1" max="120"><br><br>
+
+        <label for="dob">Date of Birth:</label><br>
+        <input type="date" id="dob" name="dob"><br><br>
+
+        <label for="gender">Gender:</label><br>
+        <select id="gender" name="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select><br><br>
+
+        <h1>Favourite movie</h1>
+        <label for="movie">Favorite Movie:</label><br>
+        <input type="text" id="movie" name="movie"><br><br>
+
+        <label for="genre">Favorite Movie Genre:</label><br>
+        <input type="checkbox" id="action" name="genre" value="action">
+        <label for="action">Action</label><br>
+        <input type="checkbox" id="comedy" name="genre" value="comedy">
+        <label for="comedy">Comedy</label><br>
+        <input type="checkbox" id="drama" name="genre" value="drama">
+        <label for="drama">Drama</label><br><br>
+
+        <label for="rating">Rate Your Favorite Movie:</label><br>
+        <input type="range" id="rating" name="rating" min="1" max="10"><br><br>
+
+        <label for="comments">Additional Comments:</label><br>
+        <textarea id="comments" name="comments" rows="4" cols="50"></textarea><br><br>
+
+        <h1>Other</h1>
+        <label for="newsletter">Pick one of these radio buttons:</label><br>
+        <input type="radio" id="yes" name="newsletter" value="yes">
+        <label for="yes">Yes</label><br>
+        <input type="radio" id="no" name="newsletter" value="no">
+        <label for="no">No</label><br><br>
+
+        <label for="color">Favorite Color:</label><br>
+        <input type="color" id="color" name="color"><br><br>
+
+        <label for="time">Preferred Contact Time:</label><br>
+        <input type="time" id="time" name="time"><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+
+</html>
