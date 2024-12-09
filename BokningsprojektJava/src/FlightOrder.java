@@ -1,10 +1,10 @@
-public class FlightCarOrder implements IOrder {
+public class FlightOrder implements IOrder {
 
   private int price;
   private int passengers;
   private int distance;
 
-  public FlightCarOrder(int price, int passengers, int distance) {
+  public FlightOrder(int price, int passengers, int distance) {
     this.price = price;
     this.passengers = passengers;
     this.distance = distance;
@@ -17,7 +17,7 @@ public class FlightCarOrder implements IOrder {
 
   @Override
   public void setPrice(int price) {
-    //Kalkylera pris baserat på antal passagerare och distans
+    this.price = price;
   }
 
   public int getPassengers() {

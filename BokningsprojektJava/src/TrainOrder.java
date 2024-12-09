@@ -1,9 +1,9 @@
-public class TrainCarOrder implements IOrder {
+public class TrainOrder implements IOrder {
 
   private int price;
   private int passengers;
 
-  public TrainCarOrder(int price, int passengers) {
+  public TrainOrder(int price, int passengers) {
     this.price = price;
     this.passengers = passengers;
   }
@@ -15,7 +15,7 @@ public class TrainCarOrder implements IOrder {
 
   @Override
   public void setPrice(int price) {
-    //Kalkylera pris baserat på antal passagerare
+    this.price = price;
   }
 
   public int getPassengers() {

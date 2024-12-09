@@ -4,7 +4,7 @@ import java.io.InputStreamReader;
 
 public class Controller {
 
-  private Calculator calculator;
+  private final Calculator calculator;
 
   public Controller() {
     this.calculator = new Calculator();
@@ -33,23 +33,35 @@ public class Controller {
         3. Flyg""");
   }
 
-    public void decideOutcome(String input) {
+  public void decideOutcome(String input) {
     switch (input) {
       case "1":
         //Kalla på metod för att hantera bilar
-        CarOrder carOrder = new CarOrder(100, 1000);
-        int totalPrice = this.calculator.calculateCarPrice(carOrder.getPrice(), carOrder.getKilometers());
+        CarOrder carOrder = new CarOrder(100, 5);
+        int totalPrice = this.calculator.calculateCarPrice(carOrder.getPrice(),
+            carOrder.getKilometers());
         carOrder.setPrice(totalPrice);
         System.out.format("Priset för bilen är: %d kr%n", carOrder.getPrice());
         break;
       case "2":
         //Kalla på metod för att hantera tåg
+        TrainOrder trainOrder = new TrainOrder(100, 5);
+        int trainPrice = this.calculator.calculateTrainPrice(trainOrder.getPrice(),
+            trainOrder.getPassengers());
+        trainOrder.setPrice(trainPrice);
+        System.out.format("Priset för tåget är: %d kr%n", trainOrder.getPrice());
         break;
       case "3":
         //Kalla på metod för att hantera flyg.
+        FlightOrder flightOrder = new FlightOrder(100, 5, 3);
+        int flightPrice = this.calculator.calculateFlightPrice(flightOrder.getPrice(),
+            flightOrder.getPassengers(), flightOrder.getDistance());
+        flightOrder.setPrice(flightPrice);
+        System.out.format("Priset för flyget är: %d kr%n", flightOrder.getPrice());
         break;
       default:
         System.out.println("Felaktig inmatning. Försök igen.");
-    }  }
+    }
+  }
 
 }
